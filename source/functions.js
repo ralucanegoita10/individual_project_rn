@@ -25,8 +25,8 @@ let player1;
 let player2;
 
 function getBoard() {
-  for (let i = 0; i < 6; i += 1) {
-    for (let j = 0; j < 7; j += 1) {
+  for (let i = 0; i < Game.boardHeight; i += 1) {
+    for (let j = 0; j < Game.boardLength; j += 1) {
       $(`#row-${i}-column-${j}`).css('background-color', 'white');
       $(`#row-${i}-column-${j}`)[0].parentNode.style.backgroundColor = 'blue';
     }
@@ -63,7 +63,7 @@ function isPositionTaken(_board, xPos, yPos) {
 function dropToBottom(xPos) {
   // Start at the bottom of the column, and step up, checking to make sure
   // each position has been filled. If one hasn't, return the empty position.
-  for (let j = Game.boardHeight-1; j >= 0; j -= 1) {
+  for (let j = Game.boardHeight - 1; j >= 0; j -= 1) {
     // change to board.height - 1 after changing the object
     if (!isPositionTaken(board, xPos, j)) {
       return j;
