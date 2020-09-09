@@ -8,7 +8,7 @@ const Game = {
   drawMsg: 'This game is a draw.',
   winMsg: 'The winner is: ',
   countToWin: 4,
-  boardLength: 6, 
+  boardLength: 6,
   boardHeight: 5,
 };
 
@@ -36,7 +36,7 @@ function getBoard() {
 }
 
 function resetBoard() {
-  player = 0;
+  turnCount = 0;
 
   for (let i = 0; i < 6; i += 1) {
     for (let j = 0; j < 7; j += 1) {
@@ -44,11 +44,8 @@ function resetBoard() {
       $(`#row-${i}-column-${j}`).css('background-color', 'white');
     }
   }
-  player1 = 'red';
 
   /* Start with Player One */
-
-  $('h3').text(`${player1}: it is your turn, please pick a column to drop your red chip.`);
 
   setTimeout(() => {
     player1 = prompt('Player One: Enter Your Name , you will be Red');
@@ -56,42 +53,10 @@ function resetBoard() {
 
     player2 = prompt('Player Two: Enter Your Name, you will be Yellow');
     player2Value = 2;
+
+    $('h3').text(`${player1}: it is your turn, please pick a column to drop your red chip.`);
   }, 0);
 }
-
-// This functions puts red/yellow pieces in game board on button click
-/* function itemOnClick() {
-  for (let i = 0; i < 6; i += 1) {
-    for (let j = 0; j < 7; j += 1) {
-      $(`#row-${i}-column-${j}`).click(() => {
-        const empty = dropToBottom(j);
-        if (empty === -1) {
-          return;
-        }
-
-        // board[empty][j] = 1;
-
-        if (player % 2 === 0) {
-          // Start with Player One 
-          $('h3').text(`${player2}: it is your turn, please pick a column to drop your chip.`);
-          $(`#row-${empty}-column-${j}`).css('background-color', 'red');
-          board[empty][j] = 1;
-          player += 1;
-        } else {
-          /* Start with Player Two 
-          $('h3').text(`${player1}: it is your turn, please pick a column to drop your chip.`);
-          $(`#row-${empty}-column-${j}`).css('background-color', 'yellow');
-          board[empty][j] = 2;
-          player += 1;
-        }
-
-        if (horizontalWinCheck() || verticalWinCheck()) { // || diagonalWinCheck()) {
-          console.log('we have a winner: ');
-        }
-      });
-    }
-  }
-}*/
 
 // General-purpose status checks for the game.
 function isPositionTaken(xPos, yPos) {
@@ -132,7 +97,6 @@ function verticalWinCheck() {
     for (let row = 0; row < Game.boardHeight - 2; row += 1) {
       if (findMatch(board[row][col], board[row + 1][col],
         board[row + 2][col], board[row + 3][col])) {
- 
         return true;
       }
       continue;
@@ -162,3 +126,23 @@ module.exports = {
   verticalWinCheck,
   gameEnd,
 };
+
+
+/*
+client side:
+- draw board, clicks,  determine column to place piece, make api calls
+
+GET - unique user id. unique game id, current state of board
+POST - update state of board, create new game
+
+server side: 
+- holding board state, checking who wins, whose turn it is, authentication?, handling api requests, score keeping
+
+
+
+POST:  /games
+GET:  /whose-turn => "red"
+GET   /game/state 
+PUT  /game/board/rows/0/cols/5
+POST /game/board/cols/5
+*/
