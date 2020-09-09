@@ -8,8 +8,8 @@ const Game = {
   drawMsg: 'This game is a draw.',
   winMsg: 'The winner is: ',
   countToWin: 4,
-  boardLength: 6,
-  boardHeight: 5,
+  boardLength: 7, //6
+  boardHeight: 6, //5 //then change around the code for getBoard
 };
 
 const board = [
@@ -22,9 +22,7 @@ const board = [
 ];
 
 let player1;
-let player1Value;
 let player2;
-let player2Value;
 
 function getBoard() {
   for (let i = 0; i < 6; i += 1) {
@@ -38,37 +36,36 @@ function getBoard() {
 function resetBoard() {
   turnCount = 0;
 
-  for (let i = 0; i < 6; i += 1) {
-    for (let j = 0; j < 7; j += 1) {
+  for (let i = 0; i < Game.boardHeight; i += 1) {
+    for (let j = 0; j < Game.boardLength; j += 1) {
       board[i][j] = 0;
       $(`#row-${i}-column-${j}`).css('background-color', 'white');
     }
   }
 
+
   /* Start with Player One */
 
   setTimeout(() => {
     player1 = prompt('Player One: Enter Your Name , you will be Red');
-    player1Value = 1;
-
     player2 = prompt('Player Two: Enter Your Name, you will be Yellow');
-    player2Value = 2;
-
-    $('h3').text(`${player1}: it is your turn, please pick a column to drop your red chip.`);
+ 
+    $('h3').text(`${player1}: it is your turn, please pick a column to drop your red chip.`).show();
   }, 0);
+
+  $('h1').hide();
 }
 
-// General-purpose status checks for the game.
-function isPositionTaken(xPos, yPos) {
-  return board[yPos][xPos] !== 0;
+function isPositionTaken(_board, xPos, yPos) {
+  return _board[yPos][xPos] !== 0;
 }
 
 function dropToBottom(xPos) {
   // Start at the bottom of the column, and step up, checking to make sure
   // each position has been filled. If one hasn't, return the empty position.
-  for (let j = Game.boardHeight; j >= 0; j -= 1) {
-    if (!isPositionTaken(xPos, j)) {
-      // console.log(`j= ${j} x= ${xPos}`);
+  for (let j = Game.boardHeight-1; j >= 0; j -= 1) {
+    // change to board.height - 1 after changing the object
+    if (!isPositionTaken(board, xPos, j)) {
       return j;
     }
   }
@@ -79,37 +76,36 @@ function findMatch(one, two, three, four) {
   return (one === two && one === three && one === four && one !== 0 && one !== undefined);
 }
 
-// Check for Horizontal Wins
-function horizontalWinCheck() {
-  for (let row = 0; row < Game.boardLength; row += 1) {
-    for (let col = 0; col < Game.boardHeight - 1; col += 1) {
-      if (findMatch(board[row][col], board[row][col + 1],
-        board[row][col + 2], board[row][col + 3])) {     
+function horizontalWinCheck(_board) {
+  for (let row = 0; row < Game.boardLength - 1; row += 1) {
+    for (let col = 0; col < Game.boardHeight - 2; col += 1) {
+      if (findMatch(_board[row][col], _board[row][col + 1],
+        _board[row][col + 2], _board[row][col + 3])) {
         return true;
       }
-      continue;
     }
   }
+  return false;
 }
 
-function verticalWinCheck() {
-  for (let col = 0; col < Game.boardLength + 1; col += 1) {
-    for (let row = 0; row < Game.boardHeight - 2; row += 1) {
-      if (findMatch(board[row][col], board[row + 1][col],
-        board[row + 2][col], board[row + 3][col])) {
+function verticalWinCheck(_board) {
+  for (let col = 0; col < Game.boardLength; col += 1) {
+    for (let row = 0; row < Game.boardHeight - 3; row += 1) {
+      if (findMatch(_board[row][col], _board[row + 1][col],
+        _board[row + 2][col], _board[row + 3][col])) {
         return true;
       }
-      continue;
     }
   }
+  return false;
 }
 
 function gameEnd(winningPlayer) {
-  for (let col = 0; col < 7; col += 1) {
-    for (let row = 0; row < 7; row += 1) {
-      $('h3').fadeOut('fast');
-      $('h2').fadeOut('fast');
-      $('h1').text(`${winningPlayer} has won! Press "New game" to start again!`).css('fontSize', '30px');
+  for (let col = 0; col < Game.boardLength; col += 1) {
+    for (let row = 0; row < Game.boardLength; row += 1) {
+      $('h3').hide();
+      $('h2').hide();
+      $('h1').text(`${winningPlayer} has won! Press "New game" to start again!`).css('fontSize', '30px').show();
     }
   }
 }
@@ -118,7 +114,6 @@ module = module || {};
 module.exports = {
   getBoard,
   resetBoard,
-  itemOnClick,
   isPositionTaken,
   dropToBottom,
   findMatch,
@@ -126,7 +121,6 @@ module.exports = {
   verticalWinCheck,
   gameEnd,
 };
-
 
 /*
 client side:

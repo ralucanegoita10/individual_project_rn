@@ -16,6 +16,10 @@ body {
     .title {
         font-size: 1.66rem;
     }
+    .wrapper {
+        margin: 20px auto 0;
+        width: 240px;
+    }
 }
 
 .wrapper {
@@ -23,12 +27,6 @@ body {
     width: 460px;
 }
 
-@media (max-width: 460px) {
-    .wrapper {
-        margin: 20px auto 0;
-        width: 240px;
-    }
-}
 
 .board button {
     display: block;
@@ -52,6 +50,9 @@ body {
     .board button {
         width: 30px;
         height: 30px;
+    }
+    .top-text {
+        font-size: 0.66rem;
     }
 }
 
@@ -83,12 +84,6 @@ body {
 .top-text {
     margin-bottom: 2rem;
     font-size: 1rem;
-}
-
-@media (max-width: 460px) {
-    .top-text {
-        font-size: 0.66rem;
-    }
 }
 
 .code {

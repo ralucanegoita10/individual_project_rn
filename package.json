@@ -17,6 +17,7 @@
     },
     "homepage": "https://github.com/ralucanegoita10/individual_project_rn#readme",
     "dependencies": {
+        "eslint-plugin-jest": "^24.0.0",
         "jest": "^26.4.2"
     },
     "devDependencies": {

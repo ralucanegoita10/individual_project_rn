@@ -11,6 +11,36 @@
     "parserOptions": {
         "ecmaVersion": 12
     },
-    "rules": {
-    }
+    "rules": {},
+    "overrides": [
+        {
+            "files": ["*.test.js"],
+            "env": {
+                "jest/globals": true
+            },
+            "plugins": [
+                "jest"
+            ]
+        },
+        {
+            "files": ["./source/funcions.js", "./source/connect4.js"],
+            "globals": {
+                "board":"writable",
+                "turnCount":"writable",
+                "currentPlayer":"writable",
+                "player1":"writable",
+                "player2":"writable",
+                "getBoard":"writable",
+                "resetBoard":"writable",
+                "isPositionTaken":"writable",
+                "dropToBottom":"writable",
+                "horizontalWinCheck":"writable",
+                "verticalWinCheck":"writable",
+                "gameEnd":"writable",
+                "Game":"writable"
+
+            }
+        }
+    ]
+
 }
