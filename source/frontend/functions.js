@@ -12,15 +12,6 @@ const Game = {
   boardHeight: 6,
 };
 
-const board = [
-  [0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0],
-];
-
 let player1;
 let player2;
 
@@ -33,44 +24,6 @@ function getBoard() {
   }
 }
 
-function resetBoard() {
-  turnCount = 0;
-
-  for (let i = 0; i < Game.boardHeight; i += 1) {
-    for (let j = 0; j < Game.boardLength; j += 1) {
-      board[i][j] = 0;
-      $(`#row-${i}-column-${j}`).css('background-color', 'white');
-    }
-  }
-
-
-  /* Start with Player One */
-
-  setTimeout(() => {
-    player1 = prompt('Player One: Enter Your Name , you will be Red');
-    player2 = prompt('Player Two: Enter Your Name, you will be Yellow');
- 
-    $('h3').text(`${player1}: it is your turn, please pick a column to drop your red chip.`).show();
-  }, 0);
-
-  $('h1').hide();
-}
-
-function isPositionTaken(_board, xPos, yPos) {
-  return _board[yPos][xPos] !== 0;
-}
-
-function dropToBottom(xPos) {
-  // Start at the bottom of the column, and step up, checking to make sure
-  // each position has been filled. If one hasn't, return the empty position.
-  for (let j = Game.boardHeight - 1; j >= 0; j -= 1) {
-    // change to board.height - 1 after changing the object
-    if (!isPositionTaken(board, xPos, j)) {
-      return j;
-    }
-  }
-  return -1;
-}
 
 function findMatch(one, two, three, four) {
   return (one === two && one === three && one === four && one !== 0 && one !== undefined);
@@ -113,9 +66,6 @@ function gameEnd(winningPlayer) {
 module = module || {};
 module.exports = {
   getBoard,
-  resetBoard,
-  isPositionTaken,
-  dropToBottom,
   findMatch,
   horizontalWinCheck,
   verticalWinCheck,
