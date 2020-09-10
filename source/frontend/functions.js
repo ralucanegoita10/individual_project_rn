@@ -3,13 +3,13 @@ let currentPlayer;
 
 const Game = {
 
-  firstPlayer: 'yellow',
-  takenMsg: 'This position is already taken. Please make another choice.',
-  drawMsg: 'This game is a draw.',
-  winMsg: 'The winner is: ',
-  countToWin: 4,
-  boardLength: 7, //6
-  boardHeight: 6, //5 //then change around the code for getBoard
+  // firstPlayer: 'yellow',
+  // takenMsg: 'This position is already taken. Please make another choice.',
+  // drawMsg: 'This game is a draw.',
+  // winMsg: 'The winner is: ',
+  // countToWin: 4,
+  boardLength: 7,
+  boardHeight: 6,
 };
 
 const board = [

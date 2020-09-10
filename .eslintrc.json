@@ -23,7 +23,7 @@
             ]
         },
         {
-            "files": ["./source/funcions.js", "./source/connect4.js"],
+            "files": ["./source/backend/funcions.js", "./source/frontend/connect4.js", "./source/backend/server.js"],
             "globals": {
                 "board":"writable",
                 "turnCount":"writable",
@@ -37,7 +37,8 @@
                 "horizontalWinCheck":"writable",
                 "verticalWinCheck":"writable",
                 "gameEnd":"writable",
-                "Game":"writable"
+                "Game":"writable",
+                "tryThis":"writable"
 
             }
         }
