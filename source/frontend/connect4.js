@@ -4,8 +4,8 @@
 /* Display the board game */
 getBoard();
 
-player1 = prompt('player1: ', "red");
-player2 = prompt('player2: ', "yellow");
+player1 = prompt('player1: ', 'Red');
+player2 = prompt('player2: ', 'Yellow');
 
 function drawBoard(board) {
   for (let row = 0; row < board.length; row += 1) {
@@ -29,15 +29,9 @@ function setNextTurn(player) {
 }
 
 function gameEnd(winningPlayer) {
- // for (let col = 0; col < board.length; col += 1) {
-   // for (let row = 0; row < board.length; row += 1) {
-      $('h3').hide();
-      $('h2').hide();
-      $('h1').text(`${winningPlayer} has won! Press "New game" to start again!`).css('fontSize', '30px').show();
-      
-   // }
-  //}
-  console.log(winningPlayer);
+  $('h3').hide();
+  $('h2').hide();
+  $('h1').text(`${winningPlayer} has won! Press "New game" to start again!`).css('fontSize', '30px').show();
 }
 
 function tryThis() {
@@ -81,12 +75,11 @@ function tryThis() {
           drawBoard(result.board);
           setNextTurn(result.player);
           setTimeout(() => {
-            player1 = prompt('player1: ', "red");
-            player2 = prompt('player2: ', "yellow");
+            player1 = prompt('player1: ', 'Red');
+            player2 = prompt('player2: ', 'Yellow');
           }, 1000);
           $('h1').hide();
-          $('h2').text("Connect 4 chips to win!").show();
-
+          $('h2').text('Connect 4 chips to win!').show();
         },
       });
     });

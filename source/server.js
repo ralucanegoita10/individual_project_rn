@@ -7,12 +7,6 @@ const app = express();
 app.use(express.static('./source/frontend'));
 app.use(express.json());
 
-const Game = {
-
-  boardLength: 7,
-  boardHeight: 6,
-};
-
 let turnCount = 0;
 
 const board = [
