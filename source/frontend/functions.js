@@ -15,9 +15,9 @@ const Game = {
 let player1;
 let player2;
 
-function getBoard() {
-  for (let i = 0; i < Game.boardHeight; i += 1) {
-    for (let j = 0; j < Game.boardLength; j += 1) {
+function getBoard(_board) {
+  for (let i = 0; i < _board.length; i += 1) {
+    for (let j = 0; j < _board[0].length; j += 1) {
       $(`#row-${i}-column-${j}`).css('background-color', 'white');
       $(`#row-${i}-column-${j}`)[0].parentNode.style.backgroundColor = 'blue';
     }
