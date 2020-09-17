@@ -11,54 +11,7 @@ app.use(express.json());
 
 const fs = require('fs').promises;
 
-async function readScores() {
-  const rawData = await fs.readFile('./source/data/game.json', 'utf-8');
-  const parsedElement = JSON.parse(rawData);
-
-  scores = parsedElement;
-}
-
-async function updateScore(player) {
-  try {
-    await readScores();
-
-    const playerObj = scores.filter((item) => item.player === player)[0];
-
-    playerObj.score += 1;
-
-    await fs.writeFile('./source/data/game.json', JSON.stringify(scores, null, '  '), 'utf-8')
-  } catch (err) {
-    console.error(err);
-  }
-}
-
-// app.put('/score/:score', async (req, res) => {
-//   const score = req.params.score;
-//   const updatedScore = req.body;
-//   // should update the user with the given ID.
-//   // If the user does not exist, return a 404 error code
-//   updatedScore.score = score;
-//   const players = JSON.parse( fs.readFile('data/game.json'));
-//   /* const isValidUserId = users.some(u => u.userId === userId);
-
-//   if (!isValidUserId) {
-//       res.status(404).send('unknown user');
-//       return;
-//   }*/
-//   const newData = [
-//       ...users.filter(u => u.userId !== userId),
-//       updatedUser,
-//   ];
-//   await fs.writeFile('data/users.json', JSON.stringify(newData), 'utf8');
-//   res.status(200).send('ok')
-// });
-
-
-
-
-
 let turnCount = 0;
-
 
 const board = [
   [0, 0, 0, 0, 0, 0, 0],
@@ -69,7 +22,34 @@ const board = [
   [0, 0, 0, 0, 0, 0, 0],
 ];
 
+/* Reads from file and adds contents to global variable 'scores' */
+async function readScores() {
+  const rawData = await fs.readFile('./source/data/game.json', 'utf-8');
+  const parsedElement = JSON.parse(rawData);
+  scores = parsedElement;
+}
+
+/* Selects the element of the file that matches the given player
+   and updates its score */
+async function updateScore(player) {
+  try {
+    await readScores();
+
+    const playerObj = scores.filter((item) => item.player === player)[0];
+
+    playerObj.score += 1;
+
+    await fs.writeFile('./source/data/game.json', JSON.stringify(scores, null, '  '), 'utf-8');
+  } catch (err) {
+    console.error(err);
+  }
+}
+
 function isPositionTaken(_board, xPos, yPos) {
+  if (xPos === undefined || yPos === undefined) {
+    throw new Error('Argument undefined');
+  }
+
   return _board[yPos][xPos] !== 0;
 }
 
@@ -94,10 +74,6 @@ function resetGame(_board) {
     }
   }
 
-  // if (scores.player1 >= 10 && scores.player2 >= 10) {
-  //   scores.player1 = 0;
-  //   scores.player2 = 0;
-  // }
   return _board;
 }
 
@@ -140,6 +116,7 @@ function verticalWinCheck(_board) {
 }
 
 app.get('/get-board', (req, res) => {
+  readScores();
   res.json({
     board,
     scores,
@@ -168,7 +145,6 @@ app.post('/game/column/:column', (req, res) => {
 });
 
 app.post('/game/reset-game', (req, res) => {
-  
   res.json({
     board: resetGame(board),
     player: turnCount % 2 === 0 ? 1 : 2,
@@ -188,7 +164,6 @@ app.get('/game/winner', async (req, res) => {
       gameEnded: true,
       scores,
     });
-
   } else if (verticalWinner !== -1) {
     await updateScore(verticalWinner);
     res.json({
@@ -203,3 +178,14 @@ app.get('/game/winner', async (req, res) => {
 
 /* Start the server */
 app.listen(8080);
+
+module.exports = {
+  readScores,
+  updateScore,
+  isPositionTaken,
+  dropToBottom,
+  resetGame,
+  findMatch,
+  horizontalWinCheck,
+  verticalWinCheck,
+};

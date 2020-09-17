@@ -1,4 +1,4 @@
-const { findMatch } = require('../source/functions');
+//const { drawBoard, setNextTurn, gameEnd} = require('../source/frontend/connect4.js');
 
 /*
 describe("isTurnTaken", () => {
@@ -13,7 +13,7 @@ describe("isTurnTaken", () => {
 
 })
 */
-
+/*
 describe('findMatch', () => {
   test('Returns false if all inputs are undefined', () => {
     const output = findMatch(undefined, undefined, undefined, undefined);
@@ -24,5 +24,5 @@ describe('findMatch', () => {
     const output = findMatch(1, undefined, undefined, undefined);
     expect(output).toBe(false);
   });
-});
+});*/
 

@@ -24,12 +24,6 @@ function getBoard(_board) {
   }
 }
 
-
-module = module || {};
 module.exports = {
   getBoard,
-  findMatch,
-  horizontalWinCheck,
-  verticalWinCheck,
-  gameEnd,
 };

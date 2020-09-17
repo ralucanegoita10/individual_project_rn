@@ -3,6 +3,9 @@
 
 let gameEnded = false;
 
+player1 = prompt('player1: ', 'Red');
+player2 = prompt('player2: ', 'Yellow');
+
 /* Display the same board - when browser refreshes */
 $.ajax({
   type: 'GET',
@@ -10,13 +13,16 @@ $.ajax({
   contentType: 'application/json',
   success: (result) => {
     drawBoard(result.board);
-    redCounter.innerHTML = `Red has won ${result.scores.player1} games`;
-    yellowCounter.innerHTML = `Yellow has won ${result.scores.player2} games`;
+
+    $('h3').text(`${player1}: it is your turn, please pick a column to drop your chip.`).show();
+
+    const playerObj1 = result.scores.filter((item) => item.player === 1)[0];
+    const playerObj2 = result.scores.filter((item) => item.player === 2)[0];
+
+    redCounter.innerHTML = `Red has won ${playerObj1.score} games`;
+    yellowCounter.innerHTML = `Yellow has won ${playerObj2.score} games`;
   },
 });
-
-player1 = prompt('player1: ', 'Red');
-player2 = prompt('player2: ', 'Yellow');
 
 function drawBoard(board) {
   for (let row = 0; row < board.length; row += 1) {
@@ -48,7 +54,6 @@ function gameEnd(winningPlayer) {
   $('h1').text(`${winningPlayer} has won! Press "New game" to start again!`)
     .css('fontSize', '30px')
     .show();
-  
   gameEnded = true;
 }
 
@@ -116,7 +121,9 @@ function tryThis() {
 
 tryThis();
 
-module = module || {};
 module.exports = {
   tryThis,
+  drawBoard,
+  setNextTurn,
+  gameEnd,
 };
