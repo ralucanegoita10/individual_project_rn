@@ -53,13 +53,13 @@ function isPositionTaken(_board, xPos, yPos) {
   return _board[yPos][xPos] !== 0;
 }
 
-function dropToBottom(_board, xPos) {
+function dropToBottom(_board, xPos, freePos) {
   // Start at the bottom of the column, and step up, checking to make sure
   // each position has been filled. If one hasn't, return the empty position.
   for (let j = _board.length - 1; j >= 0; j -= 1) {
-    // change to board.height - 1 after changing the object
     if (!isPositionTaken(_board, xPos, j)) {
-      return j;
+      freePos = j;
+      return freePos;
     }
   }
   return -1;
@@ -81,7 +81,7 @@ function findMatch(one, two, three, four) {
   return (one === two && one === three && one === four && one !== 0 && one !== undefined);
 }
 
-function horizontalWinCheck(_board) {
+function horizontalWinCheck(_board, turnCount) {
   for (let row = 0; row < _board.length; row += 1) {
     for (let col = 0; col < _board[row].length - 3; col += 1) {
       if (findMatch(_board[row][col], _board[row][col + 1],
@@ -98,7 +98,7 @@ function horizontalWinCheck(_board) {
   return -1;
 }
 
-function verticalWinCheck(_board) {
+function verticalWinCheck(_board, turnCount) {
   for (let row = 0; row < _board.length - 3; row += 1) {
     for (let col = 0; col < _board[row].length; col += 1) {
       if (findMatch(_board[row][col], _board[row + 1][col],
@@ -124,7 +124,8 @@ app.get('/get-board', (req, res) => {
 });
 
 app.post('/game/column/:column', (req, res) => {
-  const row = dropToBottom(board, req.params.column);
+  const freePos = 0;
+  const row = dropToBottom(board, req.params.column, freePos);
 
   if (row === -1) {
     return board;
@@ -153,8 +154,8 @@ app.post('/game/reset-game', (req, res) => {
 
 app.get('/game/winner', async (req, res) => {
   await readScores();
-  const horizontalWinner = horizontalWinCheck(board);
-  const verticalWinner = verticalWinCheck(board);
+  const horizontalWinner = horizontalWinCheck(board, turnCount);
+  const verticalWinner = verticalWinCheck(board, turnCount);
 
   if (horizontalWinner !== -1) {
     await updateScore(horizontalWinner);
