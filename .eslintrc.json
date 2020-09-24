@@ -37,9 +37,8 @@
                 "horizontalWinCheck":"writable",
                 "verticalWinCheck":"writable",
                 "gameEnd":"writable",
-                "Game":"writable",
-                "tryThis":"writable"
-
+                "game":"writable",
+                "setupEvents":"writable"
             }
         }
     ]

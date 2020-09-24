@@ -1,15 +1,13 @@
 /* Import express */
 const express = require('express');
 
+const fs = require('fs').promises;
+
 /* Create express server instance */
 const app = express();
 
-let scores;
-
 app.use(express.static('./source/frontend'));
 app.use(express.json());
-
-const fs = require('fs').promises;
 
 let turnCount = 0;
 
@@ -25,21 +23,23 @@ const board = [
 /* Reads from file and adds contents to global variable 'scores' */
 async function readScores() {
   const rawData = await fs.readFile('./source/data/game.json', 'utf-8');
-  const parsedElement = JSON.parse(rawData);
-  scores = parsedElement;
+
+  const scores = JSON.parse(rawData);
+
+  return scores;
 }
 
 /* Selects the element of the file that matches the given player
    and updates its score */
 async function updateScore(player) {
   try {
-    await readScores();
+    const scoreObtained = await readScores();
 
-    const playerObj = scores.filter((item) => item.player === player)[0];
+    const playerObj = scoreObtained.find((item) => item.player === player);
 
     playerObj.score += 1;
 
-    await fs.writeFile('./source/data/game.json', JSON.stringify(scores, null, '  '), 'utf-8');
+    await fs.writeFile('./source/data/game.json', JSON.stringify(scoreObtained, null, '  '), 'utf-8');
   } catch (err) {
     console.error(err);
   }
@@ -81,16 +81,16 @@ function findMatch(one, two, three, four) {
   return (one === two && one === three && one === four && one !== 0 && one !== undefined);
 }
 
-function horizontalWinCheck(_board, turnCount) {
+async function horizontalWinCheck(_board, turnCount) {
   for (let row = 0; row < _board.length; row += 1) {
     for (let col = 0; col < _board[row].length - 3; col += 1) {
       if (findMatch(_board[row][col], _board[row][col + 1],
         _board[row][col + 2], _board[row][col + 3])) {
         if (turnCount % 2 === 1) {
-          updateScore(1);
+          await updateScore(1);
           return 1;
         }
-        updateScore(2);
+        await updateScore(2);
         return 2;
       }
     }
@@ -98,16 +98,16 @@ function horizontalWinCheck(_board, turnCount) {
   return -1;
 }
 
-function verticalWinCheck(_board, turnCount) {
+async function verticalWinCheck(_board, turnCount) {
   for (let row = 0; row < _board.length - 3; row += 1) {
     for (let col = 0; col < _board[row].length; col += 1) {
       if (findMatch(_board[row][col], _board[row + 1][col],
         _board[row + 2][col], _board[row + 3][col])) {
         if (turnCount % 2 === 1) {
-          updateScore(1);
+          await updateScore(1);
           return 1;
         }
-        updateScore(1);
+        await updateScore(1);
         return 2;
       }
     }
@@ -115,8 +115,8 @@ function verticalWinCheck(_board, turnCount) {
   return -1;
 }
 
-app.get('/get-board', (req, res) => {
-  readScores();
+app.get('/get-board', async (req, res) => {
+  const scores = await readScores();
   res.json({
     board,
     scores,
@@ -128,7 +128,10 @@ app.post('/game/column/:column', (req, res) => {
   const row = dropToBottom(board, req.params.column, freePos);
 
   if (row === -1) {
-    return board;
+    res.json({
+      board,
+      player: 1,
+    });
   }
 
   if (turnCount % 2 === 0) {
@@ -148,14 +151,15 @@ app.post('/game/column/:column', (req, res) => {
 app.post('/game/reset-game', (req, res) => {
   res.json({
     board: resetGame(board),
-    player: turnCount % 2 === 0 ? 1 : 2,
+    // player: turnCount % 2 === 0 ? 1 : 2,
+    player: 1,
   });
 });
 
 app.get('/game/winner', async (req, res) => {
   await readScores();
-  const horizontalWinner = horizontalWinCheck(board, turnCount);
-  const verticalWinner = verticalWinCheck(board, turnCount);
+  const horizontalWinner = await horizontalWinCheck(board, turnCount);
+  const verticalWinner = await verticalWinCheck(board, turnCount);
 
   if (horizontalWinner !== -1) {
     await updateScore(horizontalWinner);
@@ -173,12 +177,21 @@ app.get('/game/winner', async (req, res) => {
       scores,
     });
   } else {
-    res.json(-1);
+    res.json({
+      winner: null,
+      gameEnded: false,
+      scores,
+    });
   }
 });
 
 /* Start the server */
-app.listen(8080);
+if (process.env.NODE_ENV !== 'test') {
+  app.listen(8080, () => {
+    // eslint-disable-next-line no-console
+    console.log(`listening on port ${8080}...`);
+  });
+}
 
 module.exports = {
   readScores,
@@ -189,4 +202,5 @@ module.exports = {
   findMatch,
   horizontalWinCheck,
   verticalWinCheck,
+  app,
 };

@@ -1,10 +1,27 @@
 /* eslint-disable no-loop-func */
 /* eslint-disable no-use-before-define */
 
-let gameEnded = false;
+const game = {
+  boardLength: 7,
+  boardHeight: 6,
+};
 
-player1 = prompt('player1: ', 'Red');
-player2 = prompt('player2: ', 'Yellow');
+const turnCount = 0;
+let gameEnded = false;
+let currentPlayer;
+//let scores;
+
+let player1 = prompt('player1: ', 'Red');
+let player2 = prompt('player2: ', 'Yellow');
+
+function getBoard(_board) {
+  for (let i = 0; i < _board.length; i += 1) {
+    for (let j = 0; j < _board[0].length; j += 1) {
+      $(`#row-${i}-column-${j}`).css('background-color', 'white');
+      $(`#row-${i}-column-${j}`)[0].parentNode.style.backgroundColor = 'blue';
+    }
+  }
+}
 
 /* Display the same board - when browser refreshes */
 $.ajax({
@@ -16,8 +33,8 @@ $.ajax({
 
     $('h3').text(`${player1}: it is your turn, please pick a column to drop your chip.`).show();
 
-    const playerObj1 = result.scores.filter((item) => item.player === 1)[0];
-    const playerObj2 = result.scores.filter((item) => item.player === 2)[0];
+    const playerObj1 = result.scores.find((item) => item.player === 1);
+    const playerObj2 = result.scores.find((item) => item.player === 2);
 
     redCounter.innerHTML = `Red has won ${playerObj1.score} games`;
     yellowCounter.innerHTML = `Yellow has won ${playerObj2.score} games`;
@@ -41,11 +58,8 @@ function drawBoard(board) {
   }
 }
 function setNextTurn(player) {
-  if (player === 1) {
-    $('h3').text(`${player1}: it is your turn, please pick a column to drop your chip.`).show();
-  } else {
-    $('h3').text(`${player2}: it is your turn, please pick a column to drop your chip.`).show();
-  }
+  const playerName = player === 1 ? player1 : player2;
+  $('h3').text(`${playerName}: it is your turn, please pick a column to drop your chip.`).show();
 }
 
 function gameEnd(winningPlayer) {
@@ -57,11 +71,11 @@ function gameEnd(winningPlayer) {
   gameEnded = true;
 }
 
-function tryThis() {
+function setupEvents() {
   $(document).ready(() => {
   /* Start the game */
-    for (let row = 0; row < Game.boardHeight; row += 1) {
-      for (let column = 0; column < Game.boardLength; column += 1) {
+    for (let row = 0; row < game.boardHeight; row += 1) {
+      for (let column = 0; column < game.boardLength; column += 1) {
         $(`#row-${row}-column-${column}`).click(() => {
           if (gameEnded) {
             return;
@@ -82,7 +96,9 @@ function tryThis() {
             url: '/game/winner',
             contentType: 'application/json',
             success: (result) => {
-              const playerObj = result.scores.filter((item) => item.player === result.winner)[0];
+              console.log(result);
+
+              const playerObj = result.scores.find((item) => item.player === result.winner);
 
               if (result.winner === 1) {
                 gameEnd(player1);
@@ -119,10 +135,11 @@ function tryThis() {
   });
 }
 
-tryThis();
+setupEvents();
 
 module.exports = {
-  tryThis,
+  getBoard,
+  setupEvents,
   drawBoard,
   setNextTurn,
   gameEnd,
